@@ -51,7 +51,7 @@ Webhook → Python Logic → Timestamp → Google Sheets → High Risk Alert (Ou
 
 ### 🔹 Workflow
 
-![Workflow](https://github.com/kristlingr/insurance-fraud-detection-n8n-/blob/main/Screeshorts/Fraud%20Detection%20Workflow%20.jpg)
+![Workflow](Screenshots/Fraud%20Detection%20Workflow%20.jpg)
 
 
 ### 🔹 Email Alert

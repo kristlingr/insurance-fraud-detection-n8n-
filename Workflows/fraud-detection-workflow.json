@@ -1,0 +1,462 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "fraud-detection",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "20e083d5-0a4c-4c21-91a8-d690c4478466",
+      "name": "Webhook",
+      "webhookId": "02c94297-363d-483a-ba60-3596e7cff222"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "language": "pythonNative",
+        "pythonCode": "\n\ndata = _item[\"json\"]   #\n\nprob = data[\"Fraud_Probability\"]\nthreshold = 0.7\n\npredicted = 1 if prob > threshold else 0\n\n# Risk classification\nif prob > 0.85:\n    risk = \"HIGH\"\nelif prob > 0.7:\n    risk = \"MEDIUM\"\nelse:\n    risk = \"LOW\"\n\ndata[\"Predicted_Fraud\"] = predicted\ndata[\"Risk_Level\"] = risk\n\nreturn {\"json\": data}\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "582d02f0-3071-4105-b282-538c4105ae10",
+      "name": "Code in Python"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "fd2372f9-eedd-43a2-b4ea-a0dfdd426e5b",
+              "leftValue": "={{ $json.Predicted_Fraud }}",
+              "rightValue": "={{ $json.Fraud_Label }}",
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        832,
+        0
+      ],
+      "id": "aa7d2749-7007-4d09-902b-c5640d000adf",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e4fbd3f0-0714-49a3-a2a4-06153711ed42",
+              "leftValue": "={{ $json.Risk_Level }}",
+              "rightValue": "=HIGH",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1040,
+        -96
+      ],
+      "id": "402c928e-8271-465b-9593-7ba0d298a0c4",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "toRecipients": "Twinkle1grover@outlook.com",
+        "subject": "🚨 High Risk Fraud Detected",
+        "bodyContent": "=Fraud Alert 🚨\n\nClaim ID: {{$json.Claim_ID}}\nFraud Probability: {{$json.Fraud_Probability}}\nRisk Level: {{$json.Risk_Level}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.microsoftOutlook",
+      "typeVersion": 2,
+      "position": [
+        1248,
+        -192
+      ],
+      "id": "3665fd15-71b6-48a8-a852-0f7a715072b8",
+      "name": "Send a message",
+      "webhookId": "403d2237-e0c6-458a-870a-e571e9e27103",
+      "credentials": {
+        "microsoftOutlookOAuth2Api": {
+          "id": "SsAy5O1UjDbt7i0b",
+          "name": "Microsoft Outlook OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1MUUZesurL7Olb5iAqW3IWc72NoxhuWMeYpU0ySzsOgk",
+          "mode": "list",
+          "cachedResultName": "Fraud Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MUUZesurL7Olb5iAqW3IWc72NoxhuWMeYpU0ySzsOgk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Fraud_Info",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MUUZesurL7Olb5iAqW3IWc72NoxhuWMeYpU0ySzsOgk/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Claim_ID": "={{ $('Edit Fields').item.json.Claim_ID }}",
+            "Fraud_Probability": "={{ $('Edit Fields').item.json.Fraud_Probability }}",
+            "Fraud_Label": "={{ $('Edit Fields').item.json.Fraud_Label }}",
+            "Predicted_Fraud\n": "={{ $('Edit Fields').item.json.Predicted_Fraud }}",
+            "Risk_Level": "={{ $('Edit Fields').item.json.Risk_Level }}",
+            "Timestamp": "={{ $('Edit Fields').item.json.Timestanp }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Claim_ID",
+              "displayName": "Claim_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fraud_Probability",
+              "displayName": "Fraud_Probability",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fraud_Label",
+              "displayName": "Fraud_Label",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Predicted_Fraud\n",
+              "displayName": "Predicted_Fraud\n",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Risk_Level",
+              "displayName": "Risk_Level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1616,
+        -192
+      ],
+      "id": "1bda6054-8743-4375-8588-5759554666e3",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VtUbOGMrMMcr3MhT",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1MUUZesurL7Olb5iAqW3IWc72NoxhuWMeYpU0ySzsOgk",
+          "mode": "list",
+          "cachedResultName": "Fraud Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MUUZesurL7Olb5iAqW3IWc72NoxhuWMeYpU0ySzsOgk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Fraud_Info",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MUUZesurL7Olb5iAqW3IWc72NoxhuWMeYpU0ySzsOgk/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Fraud_Probability": "={{ $json.Fraud_Probability }}",
+            "Claim_ID": "={{ $json.Claim_ID }}",
+            "Fraud_Label": "={{ $json.Fraud_Label }}",
+            "Predicted_Fraud\n": "={{ $json.Predicted_Fraud }}",
+            "Risk_Level": "={{ $json.Risk_Level }}",
+            "Timestamp": "={{ $json.Timestanp }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Claim_ID",
+              "displayName": "Claim_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fraud_Probability",
+              "displayName": "Fraud_Probability",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fraud_Label",
+              "displayName": "Fraud_Label",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Predicted_Fraud\n",
+              "displayName": "Predicted_Fraud\n",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Risk_Level",
+              "displayName": "Risk_Level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Timestamp",
+              "displayName": "Timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        624,
+        0
+      ],
+      "id": "155b7b30-a562-4078-896f-21cb5818ab59",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VtUbOGMrMMcr3MhT",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "55686584-4dcf-451c-a31d-23cdf7ae80f7",
+              "name": "Timestanp",
+              "value": "={{$now.format(\"yyyy-MM-dd HH:mm:ss\")}}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "10ab7705-4434-45d4-a99b-5410da43cfa2",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "Claim_ID": "C101",
+          "Fraud_Probability": 0.85,
+          "Fraud_Label": 1
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in Python",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "b2a5c743-6c7a-41ad-b6b2-dd1d60fc22f2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "57863fffebe4b683f88732745a29a01896a8393cd8e936e3ae2b1f1aa6673230"
+  },
+  "id": "8QbuyLfDVhJmCpqa",
+  "tags": []
+}

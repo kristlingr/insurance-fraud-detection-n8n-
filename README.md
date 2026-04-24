@@ -9,9 +9,9 @@
 
 ## 📌 Overview
 
-This project is a hands-on attempt to build a **real-time fraud detection pipeline** using n8n.
+This project is a hands-on attempt to build a real-time fraud detection pipeline using n8n, focusing on how fraud detection systems work beyond just model building.  
 
-Instead of focusing only on model logic, the goal was to simulate how fraud detection works in real-world systems — including ingestion, decision-making, alerting, and storage.
+This project focuses on building a complete data pipeline — from ingestion to alerting — rather than just developing a prediction model.
 
 ---
 
@@ -92,7 +92,14 @@ Webhook → Python Logic → Timestamp → Google Sheets → High Risk Alert (Ou
 * Fixing Google Sheets column sync issues after schema updates
 
 ---
+## ✅ Results
 
+* Successfully simulated real-time fraud detection workflow  
+* High-risk claims trigger automated email alerts  
+* All transactions logged for analysis and reporting  
+* Pipeline designed to be easily extended for real-world use cases
+  
+---
 ## 🛠 Tech Stack
 
 * n8n
@@ -107,6 +114,12 @@ Webhook → Python Logic → Timestamp → Google Sheets → High Risk Alert (Ou
 * Integrate a trained ML model instead of rule-based logic
 * Build a dashboard using Power BI / Tableau
 * Automate ingestion from Outlook / SharePoint
+
+---
+
+## 📬 Feedback
+
+Open to feedback and suggestions to improve this pipeline further.
 
 ---
 

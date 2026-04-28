@@ -66,6 +66,8 @@ Version-1
 
 version-2 (API enabled)
 
+![workflow](Screenshots/API%20Integrated%20Fraud%20Detection%20Automation.jpg)
+
 ### 🔹 Email Alert
 
 ![Email Alert](Screenshots/Email%20Alert%20.jpg)

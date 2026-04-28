@@ -11,7 +11,7 @@
 
 This project is a hands-on attempt to build a real-time fraud detection pipeline using n8n, focusing on how fraud detection systems work beyond just model building.  
 
-This project focuses on building a complete data pipeline — from ingestion to alerting — rather than just developing a prediction model.
+Instead of only building a prediction model, this project simulates a complete pipeline — from data ingestion to alerting and storage.
 
 ---
 
@@ -38,21 +38,33 @@ This project helped me understand:
 * Adds timestamps for tracking and analysis
 
 ---
+## 🧩 Workflow Architecture & Evolution
+
+The pipeline was built in two stages — starting with rule-based logic and then evolving into an API-integrated architecture.
+
+![Architecture]
+
+This evolution highlights the transition from internal rule-based processing to a scalable, API-driven fraud detection system.
+
 
 ## 🔄 Workflow
-
+version-1
 ```plaintext
 Webhook → Python Logic → Timestamp → Google Sheets → High Risk Alert (Outlook)
 ```
-
+Version-2
+```plaintext
+Webhook → HTTP Request (ML API) → Data Formatting → Google Sheets → IF Condition → Outlook Alert → Google Sheets (Final Log)
+```
 ---
 
 ## 📸 Screenshots
 
 ### 🔹 Workflow
-
+Version-1
 ![Workflow](Screenshots/Fraud%20Detection%20Workflow%20.jpg)
 
+version-2 (API enabled)
 
 ### 🔹 Email Alert
 
@@ -109,13 +121,18 @@ Webhook → Python Logic → Timestamp → Google Sheets → High Risk Alert (Ou
 
 ---
 
-## 🚀 Future Improvements
+### Key Improvements from v1 → v2
 
-* Integrate a trained ML model instead of rule-based logic
-* Build a dashboard using Power BI / Tableau
-* Automate ingestion from Outlook / SharePoint
+- Moved from rule-based logic to model-driven predictions  
+- Introduced API layer for scalability and modularity  
+- Enabled real-time fraud scoring  
+- Improved system design closer to production environments
 
----
+  ---
+ ## 🚀 Future Improvements
+
+* Build an interactive dashboard using Power BI or Tableau for fraud trend analysis and reporting  
+* Automate data ingestion from Outlook emails or SharePoint uploads to eliminate manual triggering  
 
 ## 📬 Feedback
 
